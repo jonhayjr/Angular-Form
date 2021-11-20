@@ -19,7 +19,7 @@
   </li>
 </ul>
 <!-- don't show the form unless you're creating a new review or editing a review -->
-<form autocomplete="off" *ngIf="editing || creating"
+<form autocomplete="off" *ngIf="editing || creating" (ngSubmit)="submitForm()"
   
 >
 
@@ -77,5 +77,5 @@
 </form>
 
 <!-- only show this button when the form isn't visible -->
-<button type="button" class="btn btn-info" (click)="toggleForm()" *ngIf="!creating"
+<button type="button" class="btn btn-info" (click)="toggleCreateForm()" *ngIf="!creating"
   >New Review</button>

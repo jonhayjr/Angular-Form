@@ -58,9 +58,23 @@ export class ReviewsComponent  {
 
   submitForm(form) {
     // update the edited review, or create a new one
+    if (this.editing) {
+      const review = this.reviews.find(review => review.flop === this.model.flop);
+      review.flop = this.model.flop;
+      review.stars = this.model.stars;
+      review.review = this.model.review
+    } else {
+      const newReview = {
+        flop: this.model.flop,
+        stars: this.model.stars,
+        review: this. model.review
+      }
+      this.reviews.push(newReview);
+    }
   }
 
-  toggleForm() {
+  toggleCreateForm() {
+    this.model = {};
     this.creating = true;
   }
 
