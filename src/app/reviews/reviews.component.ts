@@ -49,7 +49,6 @@ export class ReviewsComponent  {
     // set the model for editing the review. 
     this.reviewBeingEdited = review;
     // might need more parameters than just the review...
-    console.log(review)
     this.model = {...review}
   }
 
@@ -61,6 +60,9 @@ export class ReviewsComponent  {
     // update the edited review, or create a new one
   }
 
+  toggleForm() {
+    this.creating = true;
+  }
 
   cancel(form) {
     // cancel the edit/create and hide the form
