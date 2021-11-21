@@ -4,14 +4,14 @@ import { Suggestion } from './Suggestion';
 @Component({
   templateUrl: './reviews.component.html',
   styles: [
-    ".validation-error {color: red; font-weight: bold;}"
+    ".validation-error {color: red;}"
   ]
 })
 export class ReviewsComponent  {
   model:any = { }
   // keep track of if we're creating or editing a review
-  reviewBeingEdited= false; // keep track of what review is being edited
-  reviewBeingCreated = false; // keep track of review being created
+  reviewBeingEdited; // keep track of what review is being edited
+ 
 
   formSubmitted = false; //keeps track of form submission
 
@@ -39,6 +39,9 @@ export class ReviewsComponent  {
     {title: "Twilight"},
     {title: "Wing Commander"},
   ]
+  //Keep track of editing and creating events
+  creating = false;
+  editing = false;
 
   constructor() { }
 
@@ -47,22 +50,18 @@ export class ReviewsComponent  {
 
   editReview(review) {
     //Updates editing flag to true
-    this.reviewBeingEdited = true;
+    this.editing = true;
+
+    //Set reviewBeingEdited
+    this.reviewBeingEdited = review;
 
     // might need more parameters than just the review...
     this.model = {...review};
   }
 
   createReview() {
-    //Object with new review
-    const newReview = {
-      flop: this.model.flop,
-      stars: this.model.stars,
-      review: this. model.review
-    }
-
     //Add object to review array
-    this.reviews.push(newReview);
+    this.reviews.push(this.model);
   }
 
   resetForm(form) {
@@ -70,9 +69,12 @@ export class ReviewsComponent  {
     //Clear model
     this.model = {};
 
-    //Reset reviewBeingEdited & reviewBeingCreated
-    this.reviewBeingEdited= false;
-     this.reviewBeingCreated = false;
+    //Resets editing and creating variables
+    this.editing = false;
+     this.creating = false;
+
+    //Reset reviewBeingEdited
+    this.reviewBeingEdited = '';
 
     //Toggle form submitted variable
     this.formSubmitted = false;
@@ -82,25 +84,28 @@ export class ReviewsComponent  {
     form.markAsPristine();
   }
 
+  updateReview() {
+    //Update review
+    this.reviewBeingEdited.flop = this.model.flop;
+    this.reviewBeingEdited.stars = this.model.stars;
+    this.reviewBeingEdited.review = this.model.review
+  }
+
   submitForm(form) {
     //toggleFormSubmitted variable
     this.formSubmitted = true;
 
     if (form.valid) {
-
         // update the edited review, or create a new one
-      if (this.reviewBeingEdited) {
-        //Find review to edit
-        const review = this.reviews.find(review => review.flop === this.model.flop);
-
+      if (this.editing) {
         //Update review
-        review.flop = this.model.flop;
-        review.stars = this.model.stars;
-        review.review = this.model.review
+        this.updateReview();
       } else {
+        //Create form
         this.createReview();
-        this.resetForm(form.form);
       }
+      //Resets form
+      this.resetForm(form.form);
     }
   }
 
@@ -109,7 +114,7 @@ export class ReviewsComponent  {
     this.model = {};
 
     //Update reviewBeingCreated flag
-    this.reviewBeingCreated = true;
+    this.creating = true;
     
   }
 

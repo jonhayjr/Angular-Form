@@ -19,17 +19,19 @@
   </li>
 </ul>
 <!-- don't show the form unless you're creating a new review or editing a review -->
-<form autocomplete="off" *ngIf="reviewBeingCreated || reviewBeingEdited" #flopForm="ngForm" (ngSubmit)="submitForm(flopForm)"
+<form autocomplete="off" *ngIf="creating || editing" #flopForm="ngForm" 
+(ngSubmit)="submitForm(flopForm)"
   
 >
 
   <div class="form-group">
-    <select id="flopselect" class="mb-2" name="flop" required [(ngModel)]="model.flop" #flopModel="ngModel">
+    <select id="flopselect" class="mb-2" name="flop" required 
+    [(ngModel)]="model.flop" #flopModel="ngModel">
       <!-- set the value -->
       <option *ngFor="let flop of flopList" value="{{flop.title}}">{{flop.title}}</option>
     </select>
     <div>
-      <span class="validation-error" *ngIf="flopModel.invalid && flopModel.touched &&formSubmitted">This field is required</span>
+      <span class="validation-error" *ngIf="flopModel.invalid && formSubmitted">You must select a flop.</span>
     </div>
   </div>
 
@@ -42,24 +44,24 @@
           <label for="star1">1</label>
         </div>
         <div>
-          <input  type="radio" name="stars" id="star2" [value]="2" required [(ngModel)]="model.stars" #starsModel="ngModel"><br>
+          <input  type="radio" name="stars" id="star2" [value]="2" required [(ngModel)]="model.stars"><br>
           <label for="star2">2</label>
         </div>
         <div>
-          <input  type="radio" name="stars" id="star3" [value]="3" required [(ngModel)]="model.stars" #starsModel="ngModel"><br>
+          <input  type="radio" name="stars" id="star3" [value]="3" required [(ngModel)]="model.stars"><br>
           <label for="star3">3</label>
         </div>
         <div>
-          <input  type="radio" name="stars" id="star4" [value]="4" required [(ngModel)]="model.stars" #starsModel="ngModel"><br>
+          <input  type="radio" name="stars" id="star4" [value]="4" required [(ngModel)]="model.stars"><br>
           <label for="star4">4</label>
         </div>
         <div>
-          <input  type="radio" name="stars" id="star5" [value]="5" required [(ngModel)]="model.stars" #starsModel="ngModel"><br>
+          <input  type="radio" name="stars" id="star5" [value]="5" required [(ngModel)]="model.stars"><br>
           <label for="star5">5</label>
         </div>
       </div>
       <div>
-        <span class="validation-error" *ngIf="starsModel.invalid && starsModel.touched && formSubmitted">This field is required</span><br>
+        <span class="validation-error" *ngIf="starsModel.invalid  && formSubmitted">You must select indicate a number of stars.</span><br>
       </div>
   </div>
 
@@ -72,7 +74,7 @@
     <textarea name="review" rows="5" minlength="20" required [(ngModel)]="model.review" #reviewModel="ngModel"
       type="text" class="form-control" id="flopname"></textarea>
     <div>
-      <span class="validation-error" *ngIf="reviewModel.invalid && reviewModel.touched && formSubmitted">This field is required and most be at least 20 characters.</span><br>
+      <span class="validation-error" *ngIf="reviewModel.invalid && formSubmitted">You must enter a review that is 20 or more characters in length.</span><br>
     </div>
   </div>
 
@@ -86,5 +88,5 @@
 </form>
 
 <!-- only show this button when the form isn't visible -->
-<button type="button" class="btn btn-info" (click)="toggleCreateForm()" *ngIf="!reviewBeingCreated"
+<button type="button" class="btn btn-info" (click)="toggleCreateForm()" *ngIf="!creating && !editing"
   >New Review</button>
