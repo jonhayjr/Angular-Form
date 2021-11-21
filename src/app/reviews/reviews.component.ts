@@ -4,12 +4,16 @@ import { Suggestion } from './Suggestion';
 @Component({
   templateUrl: './reviews.component.html',
   styles: [
+    ".validation-error {color: red; font-weight: bold;}"
   ]
 })
 export class ReviewsComponent  {
   model:any = { }
   // keep track of if we're creating or editing a review
-  reviewBeingEdited; // keep track of what review is being edited
+  reviewBeingEdited= false; // keep track of what review is being edited
+  reviewBeingCreated = false; // keep track of review being created
+
+  formSubmitted = false; //keeps track of form submission
 
   numbers = [1,2,3,4,5] // being clever about displaying stars on the review
 
@@ -36,50 +40,82 @@ export class ReviewsComponent  {
     {title: "Wing Commander"},
   ]
 
-  editing: false;
-  creating: false
-
   constructor() { }
 
   ngOnInit() {
   }
 
   editReview(review) {
-    this.editing = true;
-    // set the model for editing the review. 
-    this.reviewBeingEdited = review;
+    //Updates editing flag to true
+    this.reviewBeingEdited = true;
+
     // might need more parameters than just the review...
-    this.model = {...review}
+    this.model = {...review};
+  }
+
+  createReview() {
+    //Object with new review
+    const newReview = {
+      flop: this.model.flop,
+      stars: this.model.stars,
+      review: this. model.review
+    }
+
+    //Add object to review array
+    this.reviews.push(newReview);
   }
 
   resetForm(form) {
     // reset the form
+    //Clear model
+    this.model = {};
+
+    //Reset reviewBeingEdited & reviewBeingCreated
+    this.reviewBeingEdited= false;
+     this.reviewBeingCreated = false;
+
+    //Toggle form submitted variable
+    this.formSubmitted = false;
+    
+    //Reset form state
+    form.markAsUntouched();
+    form.markAsPristine();
   }
 
   submitForm(form) {
-    // update the edited review, or create a new one
-    if (this.editing) {
-      const review = this.reviews.find(review => review.flop === this.model.flop);
-      review.flop = this.model.flop;
-      review.stars = this.model.stars;
-      review.review = this.model.review
-    } else {
-      const newReview = {
-        flop: this.model.flop,
-        stars: this.model.stars,
-        review: this. model.review
+    //toggleFormSubmitted variable
+    this.formSubmitted = true;
+
+    if (form.valid) {
+
+        // update the edited review, or create a new one
+      if (this.reviewBeingEdited) {
+        //Find review to edit
+        const review = this.reviews.find(review => review.flop === this.model.flop);
+
+        //Update review
+        review.flop = this.model.flop;
+        review.stars = this.model.stars;
+        review.review = this.model.review
+      } else {
+        this.createReview();
+        this.resetForm(form.form);
       }
-      this.reviews.push(newReview);
     }
   }
 
   toggleCreateForm() {
+    //Clear current model
     this.model = {};
-    this.creating = true;
+
+    //Update reviewBeingCreated flag
+    this.reviewBeingCreated = true;
+    
   }
 
   cancel(form) {
     // cancel the edit/create and hide the form
+    this.resetForm(form);
   }
 
 }
